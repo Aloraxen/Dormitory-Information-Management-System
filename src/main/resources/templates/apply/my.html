@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('我的申请')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="alert alert-warning" th:if="${noStudentInfo != null and noStudentInfo}">
+            当前登录账户尚未关联学生档案，请联系宿管员补充学籍信息后再提交申请。
+        </div>
+
+        <div th:if="${noStudentInfo == null or !noStudentInfo}">
+            <div class="page-title">我的申请</div>
+            <div class="page-desc">可提交宿舍类型申请、调宿申请、宿舍报修，并查看处理进度</div>
+
+            <div class="panel">
+                <div class="panel-header">
+                    <span class="text-muted" style="font-size:13px;">共 <span th:text="${applies.size()}">0</span> 条申请</span>
+                    <a th:href="@{/apply/new}" class="btn btn-sm btn-success btn-action">+ 提交新申请</a>
+                </div>
+                <div class="panel-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                        <tr><th>#</th><th>类型</th><th>标题</th><th>内容</th><th>状态</th><th>申请时间</th><th>处理回复</th></tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="a, iter : ${applies}">
+                            <td th:text="${iter.count}">1</td>
+                            <td th:text="${a.type}">宿舍类型申请</td>
+                            <td th:text="${a.title}">标题</td>
+                            <td th:text="${a.content}">内容</td>
+                            <td>
+                                <span class="badge-status"
+                                      th:classappend="${a.status == '待处理'} ? 'bg-warning text-dark' : (${a.status == '已通过'} ? 'bg-success' : 'bg-danger')"
+                                      th:text="${a.status}">待处理</span>
+                            </td>
+                            <td th:text="${#temporals.format(a.createTime, 'yyyy-MM-dd HH:mm')}">时间</td>
+                            <td th:text="${a.reply} ?: '—'">—</td>
+                        </tr>
+                        <tr th:if="${#lists.isEmpty(applies)}">
+                            <td colspan="7" class="text-center text-muted py-4">暂无申请记录，点击右上角提交第一条申请吧</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

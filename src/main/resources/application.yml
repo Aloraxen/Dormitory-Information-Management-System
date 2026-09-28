@@ -1,0 +1,48 @@
+server:
+  port: 8080
+  servlet:
+    session:
+      timeout: 120m
+
+spring:
+  application:
+    name: Dormitory
+
+  # 数据源：请把 username / password 改成你自己本地 MySQL 的账号密码
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/Dormitory?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+
+  # JPA：表结构由 sql/dormitory.sql 初始化，因此 ddl-auto 设为 none
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    open-in-view: false
+    properties:
+      hibernate:
+        format_sql: true
+
+  thymeleaf:
+    cache: false
+    encoding: UTF-8
+    mode: HTML
+
+  mvc:
+    format:
+      date: yyyy-MM-dd
+
+logging:
+  level:
+    com.cxt.dormitory: debug
+
+# 数据备份配置：mysqldump-path 指向本机 MySQL 的 mysqldump 命令或绝对路径
+# Windows 常见路径：C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe
+# 若留空且 PATH 中找不到，系统会给出提示，其他功能不受影响
+dorm:
+  backup:
+    dir: backups
+    mysqldump-path: mysqldump
+    mysql-path: mysql

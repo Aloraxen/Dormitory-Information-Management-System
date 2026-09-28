@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('提交申请')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="page-title">提交申请</div>
+        <div class="page-desc">带 * 为必填项</div>
+
+        <div class="panel">
+            <div class="panel-body">
+                <form th:action="@{/apply/save}" method="post" style="max-width: 640px;">
+                    <div class="mb-3">
+                        <label class="form-label">申请类型 *</label>
+                        <select class="form-select" name="type" required>
+                            <option th:each="type : ${applyTypes}" th:value="${type}" th:text="${type}">类型</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">标题 *</label>
+                        <input type="text" class="form-control" name="title" placeholder="请用一句话概括申请事项" required>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">申请内容 *</label>
+                        <textarea class="form-control" name="content" rows="5"
+                                  placeholder="请详细描述申请原因、诉求等内容" required></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">提交申请</button>
+                    <a th:href="@{/apply/my}" class="btn btn-outline-secondary">返回</a>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

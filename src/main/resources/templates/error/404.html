@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('页面不存在')"></head>
+<body class="login-page">
+<div class="card text-center shadow" style="width:420px; border-radius:14px; border:none;">
+    <div class="card-body p-5">
+        <div style="font-size:56px; font-weight:800; color:#2f5597;">404</div>
+        <h5 class="mt-2 mb-3">页面不存在</h5>
+        <p class="text-muted mb-4" style="font-size:14px;">您访问的页面不存在或已被移除。</p>
+        <a th:href="@{/}" class="btn btn-primary">返回首页</a>
+    </div>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

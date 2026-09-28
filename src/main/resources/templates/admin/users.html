@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('用户权限管理')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="page-title">用户权限管理</div>
+        <div class="page-desc">维护登录账号与角色权限：系统管理员 / 宿管员 / 学生</div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="text-muted" style="font-size:13px;">共 <span th:text="${users.size()}">0</span> 个账号</span>
+                <a th:href="@{/admin/users/new}" class="btn btn-sm btn-success btn-action">+ 新增用户</a>
+            </div>
+            <div class="panel-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th>#</th><th>登录账号</th><th>姓名</th><th>角色</th><th>状态</th>
+                        <th>创建时间</th><th width="230">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="u, iter : ${users}">
+                        <td th:text="${iter.count}">1</td>
+                        <td th:text="${u.username}">admin</td>
+                        <td th:text="${u.name}">张伟</td>
+                        <td>
+                            <span class="badge-status"
+                                  th:classappend="${u.role == 'ROLE_ADMIN'} ? 'bg-danger' : (${u.role == 'ROLE_MANAGER'} ? 'bg-primary' : 'bg-info')"
+                                  th:text="${u.role == 'ROLE_ADMIN'} ? '系统管理员' : (${u.role == 'ROLE_MANAGER'} ? '宿管员' : '学生')">角色</span>
+                        </td>
+                        <td>
+                            <span class="badge-status"
+                                  th:classappend="${u.enabled} ? 'bg-success' : 'bg-secondary'"
+                                  th:text="${u.enabled} ? '启用' : '禁用'">启用</span>
+                        </td>
+                        <td th:text="${u.createTime != null ? #temporals.format(u.createTime, 'yyyy-MM-dd HH:mm') : ''}">时间</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary btn-action"
+                               th:href="@{/admin/users/edit/{id}(id=${u.id})}">编辑</a>
+                            <form th:action="@{/admin/users/toggle/{id}(id=${u.id})}" method="post" style="display:inline;">
+                                <button type="submit" class="btn btn-sm btn-outline-warning btn-action"
+                                        th:text="${u.enabled} ? '禁用' : '启用'">禁用</button>
+                            </form>
+                            <form th:action="@{/admin/users/delete/{id}(id=${u.id})}" method="post"
+                                  style="display:inline;" data-confirm="确定删除该用户吗？">
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-action">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(users)}">
+                        <td colspan="7" class="text-center text-muted py-4">暂无用户</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

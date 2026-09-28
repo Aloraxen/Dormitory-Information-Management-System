@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<aside class="sidebar" th:fragment="sidebar">
+    <div class="menu-title">常用功能</div>
+    <nav class="nav flex-column">
+        <a class="nav-link" th:href="@{/}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI == '/'} ? 'active'">首页仪表盘</a>
+    </nav>
+
+    <div class="menu-title mt-3" sec:authorize="hasAnyRole('ADMIN','MANAGER')">宿管与管理员</div>
+    <nav class="nav flex-column" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
+        <a class="nav-link" th:href="@{/students}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/students')} ? 'active'">学生信息管理</a>
+        <a class="nav-link" th:href="@{/dorm/buildings}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/dorm/buildings')} ? 'active'">宿舍楼栋管理</a>
+        <a class="nav-link" th:href="@{/dorm/room-types}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/dorm/room-types')} ? 'active'">宿舍房型管理</a>
+        <a class="nav-link" th:href="@{/dorm/rooms}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/dorm/rooms')} ? 'active'">房间床态查看</a>
+        <a class="nav-link" th:href="@{/stay}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/stay')} ? 'active'">住宿安排管理</a>
+        <a class="nav-link" th:href="@{/apply/list}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/apply/list')} ? 'active'">申请处理</a>
+    </nav>
+
+    <div class="menu-title mt-3" sec:authorize="hasRole('STUDENT')">学生自助</div>
+    <nav class="nav flex-column" sec:authorize="hasRole('STUDENT')">
+        <a class="nav-link" th:href="@{/students/my}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.equals('/students/my')} ? 'active'">我的信息</a>
+        <a class="nav-link" th:href="@{/apply/my}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/apply/my')} ? 'active'">我的申请</a>
+        <a class="nav-link" th:href="@{/apply/new}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/apply/new')} ? 'active'">提交申请</a>
+    </nav>
+
+    <div class="menu-title mt-3" sec:authorize="hasRole('ADMIN')">系统管理</div>
+    <nav class="nav flex-column" sec:authorize="hasRole('ADMIN')">
+        <a class="nav-link" th:href="@{/admin/users}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/users')} ? 'active'">用户权限管理</a>
+        <a class="nav-link" th:href="@{/admin/backups}"
+           th:classappend="${#httpServletRequest != null and #httpServletRequest.requestURI.startsWith('/admin/backups')} ? 'active'">数据备份恢复</a>
+    </nav>
+</aside>
+</html>

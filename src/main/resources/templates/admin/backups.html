@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('数据备份恢复')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="page-title">数据备份恢复</div>
+        <div class="page-desc">通过 mysqldump 定期备份数据库，防止数据丢失；支持下载备份文件与一键恢复</div>
+
+        <div class="alert alert-info" style="font-size:13px;">
+            备份文件默认保存到项目目录下的 <code>backups/</code> 文件夹。
+            如提示找不到 mysqldump，请在 <code>application.yml</code> 中将
+            <code>dorm.backup.mysqldump-path</code> 修改为本机 MySQL 的 mysqldump 绝对路径
+            （例如 <code>C:\Program Files\MySQL\MySQL Server 8.0\bin\mysqldump.exe</code>）。
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="text-muted" style="font-size:13px;">共 <span th:text="${backups.size()}">0</span> 条备份记录</span>
+                <form th:action="@{/admin/backups/do}" method="post"
+                      data-confirm="确定立即执行一次数据库备份吗？">
+                    <button type="submit" class="btn btn-sm btn-success btn-action">立即备份</button>
+                </form>
+            </div>
+            <div class="panel-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr><th>#</th><th>备份文件名</th><th>文件大小</th><th>操作人</th><th>备份时间</th><th width="240">操作</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="b, iter : ${backups}">
+                        <td th:text="${iter.count}">1</td>
+                        <td th:text="${b.fileName}">dormitory_20260925_120000.sql</td>
+                        <td th:text="${b.size}">102400</td>
+                        <td th:text="${b.operator}">admin</td>
+                        <td th:text="${#temporals.format(b.createTime, 'yyyy-MM-dd HH:mm')}">时间</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary btn-action"
+                               th:href="@{/admin/backups/download/{id}(id=${b.id})}">下载</a>
+                            <form th:action="@{/admin/backups/restore/{id}(id=${b.id})}" method="post"
+                                  style="display:inline;"
+                                  data-confirm="确定用该备份恢复数据库吗？当前数据将被覆盖，请谨慎操作！">
+                                <button type="submit" class="btn btn-sm btn-outline-warning btn-action">恢复</button>
+                            </form>
+                            <form th:action="@{/admin/backups/delete/{id}(id=${b.id})}" method="post"
+                                  style="display:inline;" data-confirm="确定删除该备份记录吗？">
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-action">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(backups)}">
+                        <td colspan="6" class="text-center text-muted py-4">暂无备份记录，点击“立即备份”开始第一次备份</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

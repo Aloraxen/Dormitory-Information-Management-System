@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('宿舍楼栋管理')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="page-title">宿舍楼栋管理</div>
+        <div class="page-desc">维护宿舍楼栋信息，支持增删改查</div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="text-muted" style="font-size:13px;">共 <span th:text="${buildings.size()}">0</span> 栋楼</span>
+                <a th:href="@{/dorm/buildings/new}" class="btn btn-sm btn-success btn-action">+ 新增楼栋</a>
+            </div>
+            <div class="panel-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr><th>#</th><th>楼栋名称</th><th>入住性别</th><th>层数</th><th>负责人</th><th>备注</th><th width="160">操作</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="b, iter : ${buildings}">
+                        <td th:text="${iter.count}">1</td>
+                        <td th:text="${b.name}">一号公寓</td>
+                        <td th:text="${b.genderLimit}">男</td>
+                        <td th:text="${b.floors}">6</td>
+                        <td th:text="${b.manager}">李静</td>
+                        <td th:text="${b.remark}">无</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary btn-action"
+                               th:href="@{/dorm/buildings/edit/{id}(id=${b.id})}">编辑</a>
+                            <form th:action="@{/dorm/buildings/delete/{id}(id=${b.id})}" method="post"
+                                  style="display:inline;" data-confirm="确定删除该楼栋吗？">
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-action">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(buildings)}">
+                        <td colspan="7" class="text-center text-muted py-4">暂无楼栋信息</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

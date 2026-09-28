@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('登录')"></head>
+<body class="login-page">
+<div class="login-card card">
+    <div class="card-header">宿舍信息管理系统</div>
+    <div class="card-body">
+        <p class="text-muted text-center mb-4" style="font-size:13px;">Dormitory Information Management System</p>
+
+        <div class="alert alert-danger flash-alert py-2" th:if="${errorMsg}" th:text="${errorMsg}">账号或密码错误</div>
+        <div class="alert alert-success flash-alert py-2" th:if="${logoutMsg}" th:text="${logoutMsg}">已退出登录</div>
+
+        <form th:action="@{/login}" method="post">
+            <div class="mb-3">
+                <label class="form-label">账号</label>
+                <input type="text" class="form-control" name="username" placeholder="请输入账号" required autofocus>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">密码</label>
+                <input type="password" class="form-control" name="password" placeholder="请输入密码" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">登 录</button>
+        </form>
+
+        <hr class="my-4">
+        <p class="mb-2" style="font-size:13px; font-weight:600;">演示账号（密码一致规律见下表）</p>
+        <table class="table table-sm table-bordered mb-0" style="font-size:12px;">
+            <thead>
+            <tr>
+                <th>角色</th><th>账号</th><th>密码</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr><td>系统管理员</td><td>admin</td><td>admin123</td></tr>
+            <tr><td>宿管员</td><td>manager</td><td>manager123</td></tr>
+            <tr><td>学生</td><td>student01</td><td>student123</td></tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+</body>
+</html>

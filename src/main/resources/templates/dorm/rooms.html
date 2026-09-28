@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('房间床态查看')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="page-title">房间床态查看</div>
+        <div class="page-desc">按楼栋查看宿舍房间与入住情况，点击“查看床位”可进入床位可视化详情</div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <form class="d-flex gap-2 align-items-center" th:action="@{/dorm/rooms}" method="get">
+                    <label class="form-label mb-0" style="font-size:13px;">楼栋筛选</label>
+                    <select class="form-select form-select-sm" name="buildingId" style="width:200px;"
+                            onchange="this.form.submit()">
+                        <option th:each="b : ${buildings}" th:value="${b.id}" th:text="${b.name}"
+                                th:selected="${b.id == currentBuildingId}">一号公寓</option>
+                    </select>
+                    <noscript><button type="submit" class="btn btn-sm btn-primary btn-action">查询</button></noscript>
+                </form>
+                <a th:href="@{/dorm/rooms/new}" class="btn btn-sm btn-success btn-action">+ 新增房间</a>
+            </div>
+            <div class="panel-body">
+                <div class="row g-3">
+                    <div class="col-6 col-md-4 col-xl-3" th:each="vo : ${roomVOs}">
+                        <div class="room-card p-3">
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+                                <span class="fw-bold" style="font-size:17px;"
+                                      th:text="${vo.room.roomNo}">101</span>
+                                <span class="badge bg-secondary" th:text="${vo.room.roomType.name}">四人间</span>
+                            </div>
+                            <div class="text-muted mb-2" style="font-size:12px;">
+                                <span th:text="|${vo.room.floor} 层 · ${vo.room.building.name} · ${vo.room.status}|">1 层 · 一号公寓 · 正常</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="progress flex-fill me-2" style="height:8px;">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                         th:style="'width: ' + (${vo.occupied} * 100.0 / ${vo.room.roomType.bedCount}) + '%'"></div>
+                                </div>
+                                <span style="font-size:12px;"
+                                      th:text="|${vo.occupied}/${vo.room.roomType.bedCount} 已住|">2/4 已住</span>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a class="btn btn-sm btn-outline-primary btn-action"
+                                   th:href="@{/dorm/rooms/detail/{id}(id=${vo.room.id})}">查看床位</a>
+                                <a class="btn btn-sm btn-outline-secondary btn-action"
+                                   th:href="@{/dorm/rooms/edit/{id}(id=${vo.room.id})}">编辑</a>
+                                <form th:action="@{/dorm/rooms/delete/{id}(id=${vo.room.id})}" method="post"
+                                      data-confirm="确定删除该房间吗？">
+                                    <button type="submit" class="btn btn-sm btn-outline-danger btn-action">删除</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 text-center text-muted py-4"
+                         th:if="${#lists.isEmpty(roomVOs)}">
+                        该楼栋下暂无房间，请点击右上角“新增房间”添加。
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

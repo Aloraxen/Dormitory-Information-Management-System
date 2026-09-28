@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('住宿安排管理')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="page-title">住宿安排管理</div>
+        <div class="page-desc">为学生分配床位、调整住宿安排、办理退宿</div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="text-muted" style="font-size:13px;">共 <span th:text="${stays.size()}">0</span> 条记录</span>
+                <a th:href="@{/stay/new}" class="btn btn-sm btn-success btn-action">+ 分配床位</a>
+            </div>
+            <div class="panel-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th>#</th><th>学号</th><th>学生</th><th>楼栋</th><th>房间</th><th>床位</th>
+                        <th>入住日期</th><th>退宿日期</th><th>状态</th><th>备注</th><th width="230">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="s, iter : ${stays}">
+                        <td th:text="${iter.count}">1</td>
+                        <td th:text="${s.student.studentNo}">2023010100</td>
+                        <td th:text="${s.student.name}">王小明</td>
+                        <td th:text="${s.room.building.name}">一号公寓</td>
+                        <td th:text="${s.room.roomNo}">101</td>
+                        <td th:text="${s.bedNo}">1号床</td>
+                        <td th:text="${s.checkInDate != null ? #temporals.format(s.checkInDate, 'yyyy-MM-dd') : ''}">2026-09-01</td>
+                        <td th:text="${s.checkOutDate != null ? #temporals.format(s.checkOutDate, 'yyyy-MM-dd') : '—'}">—</td>
+                        <td>
+                            <span class="badge-status"
+                                  th:classappend="${s.status == '在住'} ? 'bg-success' : 'bg-secondary'"
+                                  th:text="${s.status}">在住</span>
+                        </td>
+                        <td th:text="${s.remark} ?: '—'">—</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary btn-action"
+                               th:href="@{/stay/edit/{id}(id=${s.id})}">调整</a>
+                            <form th:action="@{/stay/checkout/{id}(id=${s.id})}" method="post" style="display:inline;"
+                                  data-confirm="确定为该学生办理退宿吗？">
+                                <button type="submit" class="btn btn-sm btn-outline-warning btn-action"
+                                        th:disabled="${s.status != '在住'}">退宿</button>
+                            </form>
+                            <form th:action="@{/stay/delete/{id}(id=${s.id})}" method="post" style="display:inline;"
+                                  data-confirm="确定删除该记录吗？">
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-action">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(stays)}">
+                        <td colspan="11" class="text-center text-muted py-4">暂无住宿记录</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

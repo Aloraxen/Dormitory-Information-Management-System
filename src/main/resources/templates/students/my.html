@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: head('我的信息')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div th:if="${noStudentInfo != null and noStudentInfo}">
+            当前登录账户尚未关联学生档案，请联系宿管员在"学生信息管理"中补充后再登录查看。
+        </div>
+
+        <div th:if="${noStudentInfo == null or !noStudentInfo}">
+            <div class="page-title">我的信息</div>
+            <div class="page-desc">可随时更新本人的联系方式，学号等基础信息由宿管员维护</div>
+
+            <div class="row g-3">
+                <div class="col-lg-7">
+                    <div class="panel">
+                        <div class="panel-header">基本信息</div>
+                        <div class="panel-body">
+                            <form th:action="@{/students/my/save}" th:object="${student}" method="post">
+                                <input type="hidden" th:field="*{id}">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label">学号</label>
+                                        <input type="text" class="form-control" th:field="*{studentNo}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">姓名</label>
+                                        <input type="text" class="form-control" th:field="*{name}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">学院</label>
+                                        <input type="text" class="form-control" th:field="*{college}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">专业</label>
+                                        <input type="text" class="form-control" th:field="*{major}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">班级</label>
+                                        <input type="text" class="form-control" th:field="*{className}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">性别</label>
+                                        <input type="text" class="form-control" th:field="*{gender}" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">联系电话（可修改）</label>
+                                        <input type="text" class="form-control" th:field="*{phone}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label">电子邮箱（可修改）</label>
+                                        <input type="text" class="form-control" th:field="*{email}">
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">保存修改</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-5">
+                    <div class="panel mb-3">
+                        <div class="panel-header">当前住宿</div>
+                        <div class="panel-body" th:if="${currentStay != null}">
+                            <table class="table table-sm mb-0">
+                                <tr><th width="90">楼栋</th><td th:text="${currentStay.room.building.name}">一号公寓</td></tr>
+                                <tr><th>房间</th><td th:text="${currentStay.room.roomNo}">101</td></tr>
+                                <tr><th>房型</th><td th:text="${currentStay.room.roomType.name}">四人间</td></tr>
+                                <tr><th>床位</th><td th:text="${currentStay.bedNo}">1号床</td></tr>
+                                <tr><th>入住日期</th>
+                                    <td th:text="${currentStay.checkInDate != null ? #temporals.format(currentStay.checkInDate, 'yyyy-MM-dd') : ''}">2026-09-01</td></tr>
+                                <tr><th>状态</th><td><span class="badge bg-success" th:text="${currentStay.status}">在住</span></td></tr>
+                            </table>
+                        </div>
+                        <div class="panel-body text-muted" th:if="${currentStay == null}">
+                            暂无在住记录，请等待宿管员分配床位。
+                        </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-header">住宿记录</div>
+                        <div class="panel-body p-0">
+                            <table class="table table-sm mb-0">
+                                <thead><tr><th>楼栋</th><th>房间</th><th>床位</th><th>状态</th><th>入住</th><th>退宿</th></tr></thead>
+                                <tbody>
+                                <tr th:each="st : ${stays}">
+                                    <td th:text="${st.room.building.name}">楼栋</td>
+                                    <td th:text="${st.room.roomNo}">房间</td>
+                                    <td th:text="${st.bedNo}">床位</td>
+                                    <td th:text="${st.status}">状态</td>
+                                    <td th:text="${st.checkInDate != null ? #temporals.format(st.checkInDate, 'yyyy-MM-dd') : ''}">日期</td>
+                                    <td th:text="${st.checkOutDate != null ? #temporals.format(st.checkOutDate, 'yyyy-MM-dd') : '—'}">日期</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

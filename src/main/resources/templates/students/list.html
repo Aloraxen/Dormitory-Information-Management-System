@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: head('学生信息管理')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="page-title">学生信息管理</div>
+        <div class="page-desc">录入、维护学生基本信息，支持按学号 / 姓名 / 学院关键字检索</div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <form class="d-flex gap-2" th:action="@{/students}" method="get">
+                    <input type="text" class="form-control form-control-sm" name="keyword"
+                           th:value="${keyword}" placeholder="学号 / 姓名 / 学院" style="width:260px;">
+                    <button type="submit" class="btn btn-sm btn-primary btn-action">查询</button>
+                    <a th:href="@{/students}" class="btn btn-sm btn-outline-secondary btn-action">重置</a>
+                </form>
+                <a th:href="@{/students/new}" class="btn btn-sm btn-success btn-action">+ 新增学生</a>
+            </div>
+            <div class="panel-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr>
+                        <th>#</th><th>学号</th><th>姓名</th><th>性别</th><th>学院</th><th>专业</th>
+                        <th>班级</th><th>联系电话</th><th>电子邮箱</th><th>创建时间</th><th width="150">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="s, iter : ${students}">
+                        <td th:text="${iter.count}">1</td>
+                        <td th:text="${s.studentNo}">2023010100</td>
+                        <td th:text="${s.name}">王小明</td>
+                        <td th:text="${s.gender}">男</td>
+                        <td th:text="${s.college}">计算机学院</td>
+                        <td th:text="${s.major}">软件工程</td>
+                        <td th:text="${s.className}">软工2301</td>
+                        <td th:text="${s.phone}">13800000001</td>
+                        <td th:text="${s.email}">wangxm@qq.com</td>
+                        <td th:text="${s.createTime != null ? #temporals.format(s.createTime, 'yyyy-MM-dd') : ''}">2026-09-01</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary btn-action"
+                               th:href="@{/students/edit/{id}(id=${s.id})}">编辑</a>
+                            <form th:action="@{/students/delete/{id}(id=${s.id})}" method="post"
+                                  style="display:inline;" data-confirm="确定删除该学生吗？其住宿记录会一并删除。">
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-action">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(students)}">
+                        <td colspan="11" class="text-center text-muted py-4">暂无学生信息</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

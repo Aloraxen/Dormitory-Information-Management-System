@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('宿舍房型管理')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="page-title">宿舍房型管理</div>
+        <div class="page-desc">维护宿舍房型信息，支持增删改查</div>
+
+        <div class="panel">
+            <div class="panel-header">
+                <span class="text-muted" style="font-size:13px;">共 <span th:text="${roomTypes.size()}">0</span> 种房型</span>
+                <a th:href="@{/dorm/room-types/new}" class="btn btn-sm btn-success btn-action">+ 新增房型</a>
+            </div>
+            <div class="panel-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead>
+                    <tr><th>#</th><th>房型名称</th><th>床位数</th><th>收费标准（元/学期）</th><th>配置说明</th><th width="160">操作</th></tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="t, iter : ${roomTypes}">
+                        <td th:text="${iter.count}">1</td>
+                        <td th:text="${t.name}">四人间</td>
+                        <td th:text="${t.bedCount}">4</td>
+                        <td th:text="${t.price}">1200.00</td>
+                        <td th:text="${t.remark}">上床下桌</td>
+                        <td>
+                            <a class="btn btn-sm btn-outline-primary btn-action"
+                               th:href="@{/dorm/room-types/edit/{id}(id=${t.id})}">编辑</a>
+                            <form th:action="@{/dorm/room-types/delete/{id}(id=${t.id})}" method="post"
+                                  style="display:inline;" data-confirm="确定删除该房型吗？">
+                                <button type="submit" class="btn btn-sm btn-outline-danger btn-action">删除</button>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(roomTypes)}">
+                        <td colspan="6" class="text-center text-muted py-4">暂无房型信息</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

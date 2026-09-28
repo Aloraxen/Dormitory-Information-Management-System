@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head('床位可视化')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <div>
+                <div class="page-title">
+                    <span th:text="${room.building.name}">一号公寓</span>
+                    <span th:text="${room.roomNo}">101</span>
+                    室（<span th:text="${room.roomType.name}">四人间</span>）
+                </div>
+                <div class="page-desc">
+                    床位分布与入住状态一目了然；空闲床位可直接点击“分配床位”安排学生入住
+                </div>
+            </div>
+            <a th:href="@{/dorm/rooms}" class="btn btn-sm btn-outline-secondary btn-action">返回房间列表</a>
+        </div>
+
+        <div class="panel">
+            <div class="panel-header">
+                床位一览（共 <span th:text="${room.roomType.bedCount}">4</span> 张床）
+            </div>
+            <div class="panel-body">
+                <div class="bed-grid">
+                    <div class="bed-box" th:each="bed : ${beds}"
+                         th:classappend="${bed.occupied} ? 'taken' : 'free'">
+                        <div class="bed-no" th:text="${bed.bedNo}">1号床</div>
+                        <div th:if="${bed.occupied}">
+                            <div class="bed-person" th:text="${bed.studentName}">王小明</div>
+                            <div class="text-muted" style="font-size:11px;"
+                                 th:text="'入住：' + ${bed.checkInDate}">入住：2026-09-01</div>
+                        </div>
+                        <div th:unless="${bed.occupied}">
+                            <div class="bed-empty">空闲中</div>
+                            <a class="btn btn-sm btn-success btn-action mt-2"
+                               th:href="@{/stay/new(roomId=${room.id}, bedNo=${bed.bedNo})}">分配床位</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

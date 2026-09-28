@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="fragments/head :: head('首页')"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <div>
+                <div class="page-title">首页仪表盘</div>
+                <div class="page-desc">欢迎回来，<span th:text="${nickname}">用户</span>，今天是
+                    <span th:text="${#temporals.format(#temporals.createNow(), 'yyyy年MM月dd日')}">2026年9月28日</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-lg-3" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="stat-icon" style="background:#eaf1fd; color:#2f5597;">楼</div>
+                        <div>
+                            <div class="stat-num" th:text="${buildingCount}">0</div>
+                            <div class="text-muted" style="font-size:13px;">宿舍楼栋</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="stat-icon" style="background:#e7f6ec; color:#067647;">房</div>
+                        <div>
+                            <div class="stat-num" th:text="${roomCount}">0</div>
+                            <div class="text-muted" style="font-size:13px;">宿舍房间</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3">
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="stat-icon" style="background:#fff4e5; color:#b54708;">生</div>
+                        <div>
+                            <div class="stat-num" th:text="${studentCount}">0</div>
+                            <div class="text-muted" style="font-size:13px;">在册学生</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="stat-icon" style="background:#f4ebff; color:#6941c6;">住</div>
+                        <div>
+                            <div class="stat-num" th:text="${activeStayCount}">0</div>
+                            <div class="text-muted" style="font-size:13px;">当前在住人数</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-lg-3" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
+                <div class="card stat-card">
+                    <div class="card-body d-flex align-items-center gap-3">
+                        <div class="stat-icon" style="background:#fef3f2; color:#b42318;">申</div>
+                        <div>
+                            <div class="stat-num" th:text="${pendingApplyCount}">0</div>
+                            <div class="text-muted" style="font-size:13px;">待处理申请</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3" sec:authorize="hasAnyRole('ADMIN','MANAGER')">
+            <div class="col-lg-6">
+                <div class="panel">
+                    <div class="panel-header">
+                        最新申请
+                        <a th:href="@{/apply/list}" class="btn btn-sm btn-outline-primary btn-action">全部申请</a>
+                    </div>
+                    <div class="panel-body p-0">
+                        <table class="table table-hover mb-0" style="font-size:14px;">
+                            <thead>
+                            <tr><th>申请人</th><th>类型</th><th>标题</th><th>状态</th><th>申请时间</th></tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="a : ${recentApplies}">
+                                <td th:text="${a.student.name}">姓名</td>
+                                <td th:text="${a.type}">类型</td>
+                                <td th:text="${a.title}">标题</td>
+                                <td>
+                                    <span class="badge-status"
+                                          th:classappend="${a.status == '待处理'} ? 'bg-warning text-dark' : (${a.status == '已通过'} ? 'bg-success' : 'bg-danger')"
+                                          th:text="${a.status}">状态</span>
+                                </td>
+                                <td th:text="${#temporals.format(a.createTime, 'MM-dd HH:mm')}">时间</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(recentApplies)}">
+                                <td colspan="5" class="text-center text-muted py-3">暂无申请记录</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="panel">
+                    <div class="panel-header">
+                        最新入住记录
+                        <a th:href="@{/stay}" class="btn btn-sm btn-outline-primary btn-action">住宿安排</a>
+                    </div>
+                    <div class="panel-body p-0">
+                        <table class="table table-hover mb-0" style="font-size:14px;">
+                            <thead>
+                            <tr><th>学生</th><th>楼栋</th><th>房间</th><th>床位</th><th>状态</th><th>入住日期</th></tr>
+                            </thead>
+                            <tbody>
+                            <tr th:each="s : ${recentStays}">
+                                <td th:text="${s.student.name}">姓名</td>
+                                <td th:text="${s.room.building.name}">楼栋</td>
+                                <td th:text="${s.room.roomNo}">房间</td>
+                                <td th:text="${s.bedNo}">床位</td>
+                                <td th:text="${s.status}">状态</td>
+                                <td th:text="${s.checkInDate != null ? #temporals.format(s.checkInDate, 'yyyy-MM-dd') : ''}">日期</td>
+                            </tr>
+                            <tr th:if="${#lists.isEmpty(recentStays)}">
+                                <td colspan="6" class="text-center text-muted py-3">暂无入住记录</td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-3" sec:authorize="hasRole('STUDENT')">
+            <div class="col-12">
+                <div class="panel">
+                    <div class="panel-header">快捷入口</div>
+                    <div class="panel-body d-flex flex-wrap gap-3">
+                        <a th:href="@{/students/my}" class="btn btn-outline-primary">查看/维护我的信息</a>
+                        <a th:href="@{/apply/my}" class="btn btn-outline-primary">查看我的申请</a>
+                        <a th:href="@{/apply/new}" class="btn btn-success">提交新申请</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

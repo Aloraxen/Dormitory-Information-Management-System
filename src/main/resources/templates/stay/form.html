@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(${formTitle})"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="page-title" th:text="${formTitle}">分配床位</div>
+        <div class="page-desc">选择学生与房间床位后进行入住登记；同一床位不能重复安排</div>
+
+        <div class="panel">
+            <div class="panel-body">
+                <form th:action="@{/stay/save}" th:object="${stay}" method="post"
+                      style="max-width: 640px;">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="form-label">学生 *</label>
+                            <select class="form-select" th:field="*{student.id}" required>
+                                <option value="">-- 请选择学生 --</option>
+                                <option th:each="st : ${students}" th:value="${st.id}"
+                                        th:text="${st.studentNo + ' · ' + st.name}">学号 · 姓名</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">房间 *</label>
+                            <select class="form-select" th:field="*{room.id}" required>
+                                <option value="">-- 请选择房间 --</option>
+                                <option th:each="r : ${rooms}" th:value="${r.id}"
+                                        th:text="${r.building.name + ' · ' + r.roomNo + '室（' + r.roomType.name + '）'}">房间</option>
+                            </select>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">床位 *</label>
+                            <input type="text" class="form-control" th:field="*{bedNo}"
+                                   placeholder="1号床" required>
+                            <div class="form-text">格式如：1号床、2号床…… 建议与房间床位一致</div>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">入住日期</label>
+                            <input type="date" class="form-control" th:field="*{checkInDate}">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">备注</label>
+                            <textarea class="form-control" th:field="*{remark}" rows="3"></textarea>
+                        </div>
+                    </div>
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <a th:href="@{/stay}" class="btn btn-outline-secondary">返回列表</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>

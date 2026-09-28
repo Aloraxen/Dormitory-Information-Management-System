@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments/head :: head(${formTitle})"></head>
+<body>
+<div th:replace="fragments/navbar :: navbar"></div>
+<div class="layout">
+    <aside th:replace="fragments/sidebar :: sidebar"></aside>
+    <main class="content">
+        <div th:replace="fragments/alerts :: alerts"></div>
+
+        <div class="page-title" th:text="${formTitle}">新增学生</div>
+        <div class="page-desc">带 * 为必填项</div>
+
+        <div class="panel">
+            <div class="panel-body">
+                <form th:action="@{/students/save}" th:object="${student}" method="post">
+                    <input type="hidden" th:field="*{id}">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <label class="form-label">学号 *</label>
+                            <input type="text" class="form-control" th:field="*{studentNo}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">姓名 *</label>
+                            <input type="text" class="form-control" th:field="*{name}" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">性别</label>
+                            <select class="form-select" th:field="*{gender}">
+                                <option value="男">男</option>
+                                <option value="女">女</option>
+                            </select>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">学院</label>
+                            <input type="text" class="form-control" th:field="*{college}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">专业</label>
+                            <input type="text" class="form-control" th:field="*{major}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">班级</label>
+                            <input type="text" class="form-control" th:field="*{className}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">联系电话</label>
+                            <input type="text" class="form-control" th:field="*{phone}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">电子邮箱</label>
+                            <input type="email" class="form-control" th:field="*{email}">
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">关联登录账号</label>
+                            <select class="form-select" th:field="*{user.id}">
+                                <option value="">-- 无（仅管理员维护信息）--</option>
+                                <option th:each="u : ${studentUsers}" th:value="${u.id}"
+                                        th:text="${u.username + '（' + u.name + '）'}">账号</option>
+                            </select>
+                            <div class="form-text">关联后该学生可登录系统查看本人信息并提交申请</div>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <button type="submit" class="btn btn-primary">保存</button>
+                        <a th:href="@{/students}" class="btn btn-outline-secondary">返回列表</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/vendor/bootstrap.bundle.min.js}"></script>
+<script th:src="@{/js/common.js}"></script>
+</body>
+</html>
