@@ -5,9 +5,10 @@
 -- 适用 MySQL 5.7 / 8.0
 --
 -- 使用方式：
---   1. 先在 Navicat 中新建数据库 Dormitory（字符集 utf8mb3，排序规则 utf8mb3_unicode_ci）；
+--   1. 先在 Navicat 中新建数据库 Dormitory（字符集 utf8mb4，排序规则 utf8mb4_unicode_ci）；
 --   2. 双击打开该数据库，在查询窗口中执行本文件全部语句；
---   3. 表结构 + 初始演示数据会自动建好，本文件可重复执行（CREATE TABLE IF NOT EXISTS）。
+--   3. 表结构 + 初始演示数据会自动建好；本文件可重复执行（每次执行会先删除全部表，
+--      再重建并写入初始数据，即重复执行会重置为初始演示数据）。
 --
 -- 初始演示账号（密码均为明文示例，已使用 BCrypt 加密存储）：
 --   管理员    admin     / admin123      角色：系统管理员
@@ -23,6 +24,21 @@
 USE `Dormitory`;
 
 SET NAMES utf8mb4;
+
+-- -------------------------------------------------------------
+-- 0. 清理旧表（保证脚本可重复执行：先删除全部表，再重建）
+--    重复执行本脚本会重置为初始演示数据
+-- -------------------------------------------------------------
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS `t_backup`;
+DROP TABLE IF EXISTS `t_apply`;
+DROP TABLE IF EXISTS `t_stay`;
+DROP TABLE IF EXISTS `t_room`;
+DROP TABLE IF EXISTS `t_room_type`;
+DROP TABLE IF EXISTS `t_building`;
+DROP TABLE IF EXISTS `t_student`;
+DROP TABLE IF EXISTS `t_user`;
+SET FOREIGN_KEY_CHECKS = 1;
 
 -- -------------------------------------------------------------
 -- 1. 用户账户表（登录账号，角色区分权限）
